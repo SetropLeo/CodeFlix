@@ -1,10 +1,10 @@
-import { Box, ThemeProvider, createTheme } from '@mui/material';
 import React from 'react';
 import { Header, Layout } from './components';
+import { Box, ThemeProvider, createTheme } from '@mui/material';
 
 const theme = createTheme({});
 
-const App = () => {
+function App() {
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -21,6 +21,6 @@ const App = () => {
       </Box>
     </ThemeProvider>
   );
-};
+}
 
 export default App;

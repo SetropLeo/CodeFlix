@@ -1,6 +1,6 @@
 import { Box, ThemeProvider, createTheme } from '@mui/material';
 import React from 'react';
-import { Header } from './components';
+import { Header, Layout } from './components';
 
 const theme = createTheme({});
 
@@ -11,10 +11,13 @@ const App = () => {
         component="main"
         sx={{
           height: '100vh',
-          backgroundColor: '#000',
+          backgroundColor: 'white',
         }}
       >
         <Header />
+        <Layout>
+          <h1>Ola</h1>
+        </Layout>
       </Box>
     </ThemeProvider>
   );

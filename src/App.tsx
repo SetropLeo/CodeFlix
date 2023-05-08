@@ -1,26 +1,31 @@
 import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+
+import { Box, ThemeProvider } from '@mui/material';
 import { Header, Layout } from './components';
-import { Box, ThemeProvider, createTheme } from '@mui/material';
 
-const theme = createTheme({});
+import { appTheme } from './config';
 
-function App() {
+const App = () => {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={appTheme}>
       <Box
         component="main"
         sx={{
           height: '100vh',
-          backgroundColor: 'white',
+          backgroundColor: (theme) => theme.palette.grey[900],
         }}
       >
         <Header />
         <Layout>
-          <h1>Ola</h1>
+          <Routes>
+            <Route path="/" element={<div>oi</div>} />
+            <Route path="about" element={<div>about</div>} />
+          </Routes>
         </Layout>
       </Box>
     </ThemeProvider>
   );
-}
+};
 
 export default App;

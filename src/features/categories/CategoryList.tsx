@@ -1,14 +1,59 @@
 import React from 'react';
 
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-import { selectCategories } from './CategorySlice';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridRowsProp,
+  GridToolbar,
+} from '@mui/x-data-grid';
 import { useAppSelector } from '../../app/hooks';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { selectCategories } from './CategorySlice';
 
 const CategoryList = () => {
   const categories = useAppSelector(selectCategories);
+
+  const componentProps = {
+    toolbar: {
+      showQuickFilter: true,
+      quickFilterProps: { debounceMs: 500 },
+    },
+  };
+
+  const mountNameCell = (rowData: GridRenderCellParams) => {
+    return (
+      <Link
+        style={{ textDecoration: 'none' }}
+        to={`/categories/edit/${rowData.id}`}
+      >
+        <Typography color="primary">{rowData.value}</Typography>
+      </Link>
+    );
+  };
+
+  const mountStatusCell = (rowData: GridRenderCellParams) => {
+    return (
+      <Typography color={rowData.value ? 'primary' : 'error'}>
+        {rowData.value ? 'Active' : 'Inactive'}
+      </Typography>
+    );
+  };
+
+  const mountActionCell = (rowData: GridRenderCellParams) => {
+    return (
+      <IconButton
+        color="secondary"
+        onClick={() => console.log('click')}
+        aria-label="delete"
+      >
+        <DeleteIcon />
+      </IconButton>
+    );
+  };
 
   const rows: GridRowsProp = categories.map((category) => ({
     id: category.id,
@@ -17,9 +62,26 @@ const CategoryList = () => {
   }));
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 150 },
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'description', headerName: 'Description', width: 150 },
+    {
+      field: 'name',
+      headerName: 'Name',
+      width: 150,
+      renderCell: mountNameCell,
+    },
+    {
+      field: 'isActive',
+      headerName: 'Active',
+      flex: 1,
+      type: 'boolean',
+      renderCell: mountStatusCell,
+    },
+    { field: 'createdAt', headerName: 'Created At', flex: 1 },
+    {
+      field: 'id',
+      headerName: 'Actions',
+      flex: 1,
+      renderCell: mountActionCell,
+    },
   ];
 
   return (
@@ -38,9 +100,19 @@ const CategoryList = () => {
         </Box>
       </Typography>
 
-      <div style={{ height: 300, width: '100%' }}>
-        <DataGrid rows={rows} columns={columns} />
-      </div>
+      <Box sx={{ display: 'flex', height: 600 }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          disableColumnFilter={true}
+          disableColumnSelector={true}
+          disableDensitySelector={true}
+          disableRowSelectionOnClick={true}
+          componentsProps={componentProps}
+          components={{ Toolbar: GridToolbar }}
+          pageSizeOptions={[5, 10, 25, 50, 100]}
+        />
+      </Box>
     </Box>
   );
 };

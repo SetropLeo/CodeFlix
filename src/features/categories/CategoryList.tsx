@@ -13,9 +13,11 @@ import {
 } from '@mui/x-data-grid';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { deleteCategory, selectCategories } from './CategorySlice';
+import { useSnackbar } from 'notistack';
 
 const CategoryList = () => {
   const categories = useAppSelector(selectCategories);
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();
 
   const componentProps = {
@@ -27,6 +29,7 @@ const CategoryList = () => {
 
   const handleDeleteCategory = (id: number) => {
     dispatch(deleteCategory(id));
+    enqueueSnackbar('Success deleting category', { variant: 'success' });
   };
 
   const mountNameCell = (params: GridRenderCellParams) => {

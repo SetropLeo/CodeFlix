@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-
-import { Box, Paper, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { CategoryForm } from '.';
+import { useSnackbar } from 'notistack';
+
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Category, selectCategoryById, updateCategory } from './CategorySlice';
 
+import { Box, Paper, Typography } from '@mui/material';
+import { CategoryForm } from '.';
+
 const CategoryEdit = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useAppDispatch();
+
   const id = useParams().id || '';
   const category = useAppSelector((state) => selectCategoryById(state, id));
-  const dispatch = useAppDispatch();
 
   const [categoryState, setCategoryState] = useState<Category>(category);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
@@ -17,6 +21,7 @@ const CategoryEdit = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(updateCategory(categoryState));
+    enqueueSnackbar("Success updating category", { variant: 'success' })
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

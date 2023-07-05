@@ -11,11 +11,12 @@ import {
   GridRowsProp,
   GridToolbar,
 } from '@mui/x-data-grid';
-import { useAppSelector } from '../../app/hooks';
-import { selectCategories } from './CategorySlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { deleteCategory, selectCategories } from './CategorySlice';
 
 const CategoryList = () => {
   const categories = useAppSelector(selectCategories);
+  const dispatch = useAppDispatch();
 
   const componentProps = {
     toolbar: {
@@ -24,30 +25,34 @@ const CategoryList = () => {
     },
   };
 
-  const mountNameCell = (rowData: GridRenderCellParams) => {
+  const handleDeleteCategory = (id: number) => {
+    dispatch(deleteCategory(id));
+  };
+
+  const mountNameCell = (params: GridRenderCellParams) => {
     return (
       <Link
         style={{ textDecoration: 'none' }}
-        to={`/categories/edit/${rowData.id}`}
+        to={`/categories/edit/${params.id}`}
       >
-        <Typography color="primary">{rowData.value}</Typography>
+        <Typography color="primary">{params.value}</Typography>
       </Link>
     );
   };
 
-  const mountStatusCell = (rowData: GridRenderCellParams) => {
+  const mountStatusCell = (params: GridRenderCellParams) => {
     return (
-      <Typography color={rowData.value ? 'primary' : 'error'}>
-        {rowData.value ? 'Active' : 'Inactive'}
+      <Typography color={params.value ? 'ActiveCaption' : 'error'}>
+        {params.value ? 'Active' : 'Inactive'}
       </Typography>
     );
   };
 
-  const mountActionCell = (rowData: GridRenderCellParams) => {
+  const mountActionCell = (params: GridRenderCellParams) => {
     return (
       <IconButton
         color="secondary"
-        onClick={() => console.log('click')}
+        onClick={() => handleDeleteCategory(params.value)}
         aria-label="delete"
       >
         <DeleteIcon />
@@ -59,6 +64,8 @@ const CategoryList = () => {
     id: category.id,
     name: category.name,
     description: category.description,
+    isActive: category.is_active,
+    createdAt: new Date(category.created_at).toLocaleString("pt-BR"),
   }));
 
   const columns: GridColDef[] = [
@@ -108,8 +115,8 @@ const CategoryList = () => {
           disableColumnSelector={true}
           disableDensitySelector={true}
           disableRowSelectionOnClick={true}
-          componentsProps={componentProps}
-          components={{ Toolbar: GridToolbar }}
+          slotProps={componentProps}
+          slots={{ toolbar: GridToolbar }}
           pageSizeOptions={[5, 10, 25, 50, 100]}
         />
       </Box>

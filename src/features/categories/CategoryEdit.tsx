@@ -3,17 +3,31 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { CategoryForm } from '.';
-import { useAppSelector } from '../../app/hooks';
-import { selectCategoryById } from './CategorySlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { Category, selectCategoryById, updateCategory } from './CategorySlice';
 
 const CategoryEdit = () => {
   const id = useParams().id || '';
   const category = useAppSelector((state) => selectCategoryById(state, id));
-  const [isDisabled, setIsDisabled] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const handleChange = (e: React.ChangeEvent) => {};
+  const [categoryState, setCategoryState] = useState<Category>(category);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
-  const handleToggle = (e: React.ChangeEvent) => {};
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(updateCategory(categoryState));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCategoryState({ ...categoryState, [name]: value });
+  };
+
+  const handleToggle = (e: React.ChangeEvent<Element>) => {
+    const { name, checked } = e.target as HTMLInputElement;
+    setCategoryState({ ...categoryState, [name]: checked });
+  };
 
   return (
     <Box>
@@ -25,12 +39,12 @@ const CategoryEdit = () => {
         </Box>
 
         <CategoryForm
-          category={category}
-          isDisabled={isDisabled}
           isLoading={false}
-          onSubmit={() => {}}
-          onChange={handleChange}
-          onToggle={handleToggle}
+          isDisabled={isDisabled}
+          category={categoryState}
+          handleToggle={handleToggle}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
         />
       </Paper>
     </Box>

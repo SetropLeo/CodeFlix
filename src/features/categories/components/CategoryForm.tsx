@@ -15,22 +15,22 @@ type Props = {
   category: Category;
   isDisabled?: boolean;
   isLoading?: boolean;
-  onSubmit: (e: React.FormEvent) => void;
-  onChange: (e: React.ChangeEvent) => void;
-  onToggle: (e: React.ChangeEvent) => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleToggle: (e: React.ChangeEvent) => void;
 };
 
 const CategoryForm = ({
   category,
-  isDisabled,
-  isLoading,
-  onSubmit,
-  onChange,
-  onToggle,
+  isDisabled = false,
+  isLoading = false,
+  handleSubmit,
+  handleChange,
+  handleToggle,
 }: Props) => {
   return (
     <Box p={2}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -40,7 +40,7 @@ const CategoryForm = ({
                 label="Name"
                 disabled={isDisabled}
                 value={category.name}
-                onChange={onChange}
+                onChange={handleChange}
               />
             </FormControl>
           </Grid>
@@ -52,7 +52,7 @@ const CategoryForm = ({
                 name="description"
                 label="Description"
                 disabled={isDisabled}
-                onChange={onChange}
+                onChange={handleChange}
                 value={category.description}
               />
             </FormControl>
@@ -66,7 +66,7 @@ const CategoryForm = ({
                   <Switch
                     name="is_active"
                     color="secondary"
-                    onChange={onToggle}
+                    onChange={handleToggle}
                     checked={category.is_active}
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
@@ -85,7 +85,6 @@ const CategoryForm = ({
                 variant="contained"
                 color="secondary"
                 disabled={isDisabled}
-                onSubmit={onSubmit}
               >
                 Save
               </Button>
